@@ -1,0 +1,10 @@
+Possible additions
+- use whatismyip.com as IP provider (if rate limited...)
+- skip DNS update on startup (requires persistence to file)
+- ignore invalid SSL certificate (if necessary)
+
+for other examples see: http://www.freymond.ca/ZoneEditDynDNS/
+
+More ZoneEdit information:
+http://www.zoneedit.com/doc/dynamic.html
+http://www.zoneedit.com/doc/dynamic/ReturnCodes.txt
