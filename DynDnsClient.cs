@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml.XPath;
@@ -14,7 +13,7 @@ namespace DynDns
         private const int SLEEP_MS_OK = 60000;
         private const int SLEEP_MS_ERROR = 15 * 60000;
         private const string IP_DETECT_PREFIX = "Current IP Address: ";
-        private const string IP_DETECT_URL = "http://dynamic.zoneedit.com/checkip.html";
+        private const string IP_DETECT_URL = "https://dynamic.zoneedit.com/checkip.html";
         private const string IP_UPDATE_URL = "https://dynamic.zoneedit.com/auth/dynamic.html?host={0}&dnsto={1}";
 
         private static string LogFile { get; set; }
@@ -28,7 +27,7 @@ namespace DynDns
 		{
             // set up error handling
             AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;
-            
+
             // set up logging
             string path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             LogFile = string.Format("{0}\\DynDnsClient.log", path);
@@ -120,6 +119,18 @@ namespace DynDns
             }
 
             // parse IP response
+            /* HTML response handler
+            var match = Regex.Match(newIpData, ".*<body>(.*)</body>.*");
+            if (match.Success)
+            {
+                string body = match.Groups[1].Value;
+                int idx = body.IndexOf(IP_DETECT_PREFIX);
+                if (idx >= 0)
+                {
+                    newIp = body.Substring(idx + IP_DETECT_PREFIX.Length);
+                }
+            }
+            */
             string[] ipLines = newIpData.Split(new string[]{"<br>"}, StringSplitOptions.None);
             foreach (var line in ipLines)
             {
@@ -135,7 +146,7 @@ namespace DynDns
                 Log("Failed to parse current IP");
                 return SLEEP_MS_ERROR;
             }
-            if (newIp.Count(c => c == '.') != 3)
+            if (newIp.Split('.').Length != 4)
             {
                 Log("Current IP is invalid: " + newIp);
                 return SLEEP_MS_ERROR;
