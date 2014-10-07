@@ -12,7 +12,7 @@ namespace DynDns
         public const string SERVICE_NAME = "ZoneEditDynDnsClient";
         private const int SLEEP_MS_OK = 60000;
         private const int SLEEP_MS_ERROR = 15 * 60000;
-        private const string IP_DETECT_PREFIX = "Current IP Address: ";
+        //private const string IP_DETECT_PREFIX = "Current IP Address: ";
         private const string IP_DETECT_URL = "https://dynamic.zoneedit.com/checkip.html";
         private const string IP_UPDATE_URL = "https://dynamic.zoneedit.com/auth/dynamic.html?host={0}&dnsto={1}";
 
@@ -131,6 +131,7 @@ namespace DynDns
                 }
             }
             */
+            /* Text prefix handler
             string[] ipLines = newIpData.Split(new string[]{"<br>"}, StringSplitOptions.None);
             foreach (var line in ipLines)
             {
@@ -141,6 +142,8 @@ namespace DynDns
                     break;
                 }
             }
+            */
+            newIp = newIpData;  // Response body is only IP, as of 2014/10/05
             if (string.IsNullOrEmpty(newIp))
             {
                 Log("Failed to parse current IP");
@@ -184,6 +187,9 @@ namespace DynDns
 
             // check update response
             bool hadErrors = false;
+            // correct their badly formatted response XML...
+            updateData = updateData.Replace(">\n", "/>");
+            // then parse as XML
             var doc = new XPathDocument(new StringReader("<root>" + updateData + "</root>"));
             var nav = doc.CreateNavigator();
             var errors = nav.Select("/root/ERROR");

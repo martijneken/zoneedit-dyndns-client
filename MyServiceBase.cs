@@ -7,7 +7,7 @@ namespace DynDns
 {
     partial class MyServiceBase : ServiceBase
     {
-        private static int MAX_CONNECTIONS = 1;
+        //private static int MAX_CONNECTIONS = 1;
         private static int EXIT_WAIT_MSEC = 120000;
         private static int MAIN_LOOP_MSEC = 60000; // default / error timeout
 
